@@ -1,0 +1,38 @@
+{% load static %}
+{% include 'includes/head.html' %}
+<link rel="stylesheet" href="{% static 'css/history_style.css' %}">
+
+<body>
+  {% include 'includes/headerHistoric.html' %}
+    <div class="wrapper" style="width:1200px; height: 600px;">
+        <div class="title">
+            <h1 data-i18n="header_title" style="font-family: 'Montserrat', sans-serif;">HISTORY SEARCH</h1>
+        </div>
+        <br>
+        <!-- Section principale avec flex pour aligner les deux parties -->
+        <div class="main-content" style="display: flex; justify-content: space-between;">
+
+            <!-- Section droite (Contenu principal) -->
+            <!-- <div class="right-section"
+                style="width: 100%; background-color: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px;"> -->
+                <div class="container">
+                  <ul class="responsive-table">
+                    <li class="table-header">
+                        <div data-i18n="document_name" class="col col-2">Document Name</div>
+                        <div  data-i18n="tags" class="col col-3">Tags</div>
+                        <div data-i18n="date" class="col col-3">Date</div>
+                        <div data-i18n="options" class="col col-4">Options</div>
+                    </li>
+                    <div id="table-body">
+                    </div>
+                </ul>
+                
+                </div>
+            <!-- </div> -->
+
+        </div>
+    </div>
+        {% include 'includes/footer.html' %}
+        <script src="{% static 'js/history.js' %}"></script>
+  </body>
+</html>

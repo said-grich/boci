@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOCISearch</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}">
+</head>
+
+<body>
+    {% include 'includes/spinner.html' %}
+
+    <header class="header">
+        <nav class="nav">
+          <a href="#" class="nav_logo">BOCISearch</a>
+            
+          <nav class="navbar">
+            <i class="fa-solid fa-globe"></i> 
+            <select class="language-selector">
+                <option value="fr">Français</option>
+                <option value="en" selected>English</option>
+            </select>
+        </nav>
+
+
+        </nav>
+      </header>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form id="registrationForm">
+                <img src="static/images/createaccount.png" style="width: 20%;" >
+                <h1 data-i18n="create_account">Create Account</h1>
+                <span data-i18n="use_email_registration">Use your email for registration</span>
+                <br><br>
+                <input type="text" id="register_username" placeholder="Name" data-i18n-placeholder="name">
+                <input type="email" id="register_email" placeholder="Email" data-i18n-placeholder="email">
+                <input type="password" id="register_password" placeholder="Password" data-i18n-placeholder="password">
+                <input type="password" id="register_confirm_password" placeholder="Confirm Password" data-i18n-placeholder="confirm_password">
+                <button type="submit" data-i18n="sign_up">Sign Up</button>
+            </form>
+        </div>
+
+        <div class="form-container sign-in">
+            <form id="loginForm">
+                <img src="static/images/sign-up.png" style="width: 20%;">
+                <h1 data-i18n="sign_in">Sign In</h1>
+                <span data-i18n="use_email_password">Use your email and password</span>
+                <br><br>
+                <input type="email" id="login_email" placeholder="Email" data-i18n-placeholder="email">
+                <input type="password" id="login_password" placeholder="Password" data-i18n-placeholder="password">
+                <button data-i18n="sign_in">Sign In</button>
+                <a href="{% url 'forget'%}" class="forgot-password" data-i18n="forgot_password">Forgot your email or password?</a>
+            </form>
+        </div>
+
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1 data-i18n="welcome_back">Welcome Back!</h1>
+                    <p data-i18n="enter_details">Enter your personal details to use all of BOCISearch features</p>
+                    <button class="hidden" id="login">Sign In</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1 data-i18n="hello_user">Hello, User!</h1>
+                    <p data-i18n="register_details">Register with your personal details to use all of BOCISearch features</p>
+                    <button class="hidden" id="register">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'includes/footer.html' %}
+    <script src="{% static 'js/auth_service.js' %}"></script>
+    <script src="{% static 'js/authGuard.js' %}"></script>
+    <script src="{% static 'js/translations.js' %}"></script>
+</body>
+</html>

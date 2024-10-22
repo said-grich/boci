@@ -1,0 +1,126 @@
+{% load static %}
+{% include 'includes/head.html' %}
+
+  <body>
+    <header class="header">
+      <nav class="nav">
+        <a href="{% url 'home' %}" class="nav_logo">BOCISearch</a>
+        <div class="dropdown">
+          <button class="dropdown-btn" onclick="toggleDropdown()">
+            <i class="fa-solid fa-bars"></i>
+            <!-- <span class="material-symbols-outlined expand-icon"> expand_more </span> -->
+          </button>
+    
+          <div class="dropdown-content" id="myDropdown">
+            <a href="{% url 'profile_page'%}" data-i18n="profile">
+              <!-- <span class="material-symbols-outlined"> cottage </span> -->
+              <i class="fa-solid fa-user"></i> Profile
+            </a>
+            <a href="{% url 'history_page'%}" data-i18n="historic">
+              <!-- <span class="material-symbols-outlined">category</span> -->
+              <i class="fa-solid fa-clock-rotate-left"></i> Historic
+            </a>
+            <a href="{% url 'search_page' %}" class="btn-back-to-search" data-i18n="back_to_search">
+              <i class="fa-solid fa-arrow-left"></i> BACK TO SEARCH
+          </a >
+              <!-- <span class="material-symbols-outlined">donut_large</span> -->
+               <a onclick="logout()" href="#" data-i18n="logout"  >
+              <i class="fa-solid fa-right-from-bracket" ></i> Logout
+            </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+<br><br>
+
+<div class="wrapper" style="width:1200px;  display: flex; flex-direction: column;">
+    <!-- Titre -->
+    <div class="title" style="text-align: center; margin-bottom: 20px;">
+      <h1 data-i18n="edit_profile" style="font-family: 'Montserrat', sans-serif;">
+        EDIT PROFILE
+      </h1>
+    </div>
+  
+    <!-- Section principale avec flex pour aligner les deux parties -->
+    <div class="main-content" style="display: flex; justify-content: space-between;">
+  
+    <div class="left-section" style="width: 22%; background-color: #f0f0f0; padding: 20px; border-radius: 8px; text-align: center;">
+        <!-- Image de profil -->
+     <div class="profile-pic" style="position: relative; margin-bottom: 15px;">
+    <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile Picture" style="border-radius: 50%; width: 100px; height: 100px;">
+    <input type="file" id="imageUpload" style="display: none;" accept="image/*" onchange="previewImage(event)">
+    <button onclick="document.getElementById('imageUpload').click()" style="position: absolute; bottom: 0; right: 0; background-color: #007BFF; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; font-size: 12px; cursor: pointer;">✎</button>
+</div> 
+        
+        <!-- Nom de l'utilisateur -->
+        <button data-i18n="upload" id="savePictureButton" style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 10px;">Upload</button>
+
+        <p><strong id="username"></strong></p>
+        
+        <p id="email" style="color: gray;"></p>
+        
+
+  <br><br>
+   <!-- Menu -->
+   <div class="menu" style="text-align: left; margin: 20px 0;">
+    <ul style="list-style-type: none; padding: 0;">
+      <li style="margin-bottom: 10px;">
+        <i class="fa-solid fa-gear"></i>&nbsp;<a href="{% url 'profile_page'%}" style="color: #000000; text-decoration: none;">Profile Settings
+      </a>
+      </li>
+      <li style="margin-bottom: 10px;">
+        <i class="fa-solid fa-clock-rotate-left"></i>&nbsp;<a href="{% url 'history_page' %}" style="color: #000000; text-decoration: none;">Search History
+      </a>
+      </li>
+      
+    </ul>
+  </div>
+<br><br><br>
+        <!-- Bouton de déconnexion -->
+        <button data-i18n="logout" onclick="logout()" style="background-color: #FF4B4B; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+            <i  class="fa-solid fa-right-from-bracket"></i>&nbsp;LOGOUT
+        </button>
+      </div>
+  
+      <!-- Section droite (Contenu principal) -->
+      <div class="right-section" style="width: 75%; background-color: #fff;  padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px;">
+    <p data-i18n="update_profile" style="margin-top: -1px;">
+      <i  class="fa-regular fa-pen-to-square"></i>&nbsp;Update your profile details below.
+        <p>
+        
+        <!-- Formulaire d'édition -->
+        <div class="content">
+          
+          <p data-i18n="change_username">Change your Username</p>
+          <ul><input type="text" placeholder="username" id="usernameInput" data-i18n-placeholder="change_username"></ul>
+  
+          <p  data-i18n="change_email">Change your Email</p>
+          <ul><input type="text" placeholder="Email" id="emailInput"></ul>
+  
+          <p data-i18n="new_password">New Password</p>
+          <ul><input type="password" placeholder="New Password" id="passwordInput" data-i18n-placeholder="new_password"></ul>
+  
+          <p data-i18n="confirm_password">Confirm Password</p>
+          <ul><input type="password" placeholder="Confirm Password" id="confirmPasswordInput" data-i18n-placeholder="confirm_password"></ul>
+        </div>
+
+        <!-- Boutons -->
+        <div class="detail" style="margin-top: 20px;">
+           
+          <button data-i18n="save" type="submit" style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px;">SAVE</button>
+          <a href="{% url 'search_page' %}" class="btn-back-to-search" style="background-color: #cacaca; color: black; padding: 10px 20px; border: none; border-radius: 5px; display: inline-block; text-decoration: none;">
+            <i class="fa-solid fa-arrow-left"></i> BACK TO SEARCH
+        </a>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    {% include 'includes/footer.html' %}
+
+    <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'js/translate.js' %}"></script>
+</body>
+</html>
