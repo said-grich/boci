@@ -1,2 +1,5 @@
 git
-libreoffice
+tesseract-ocr
+tesseract-ocr-ara
+libtesseract-dev
+libleptonica-dev
