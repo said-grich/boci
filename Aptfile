@@ -4,4 +4,3 @@ tesseract-ocr-ara
 libtesseract-dev
 libleptonica-dev
 libreoffice
-apt-get clean
