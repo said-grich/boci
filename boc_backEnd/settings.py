@@ -219,11 +219,14 @@ if os.getenv('DJANGO_PRODUCTION', default='False') == 'True':
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
+
+
+# Set the correct Tesseract binary path
 pytesseract.pytesseract.tesseract_cmd = os.getenv(
-    "TESSERACT_CMD", "/usr/bin/tesseract"
+    "TESSERACT_CMD", "/app/.apt/usr/bin/tesseract"
 )
 
-# Ensure the TESSDATA_PREFIX is set correctly
+# Set the TESSDATA_PREFIX to point to the correct language data path
 os.environ["TESSDATA_PREFIX"] = os.getenv(
-    "TESSDATA_PREFIX", "/usr/share/tesseract-ocr/4.00/tessdata/"
+    "TESSDATA_PREFIX", "/app/.apt/usr/share/tesseract-ocr/4.00/tessdata/"
 )
