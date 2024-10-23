@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
+import pytesseract
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -216,3 +218,12 @@ if os.getenv('DJANGO_PRODUCTION', default='False') == 'True':
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+pytesseract.pytesseract.tesseract_cmd = os.getenv(
+    "TESSERACT_CMD", "/usr/bin/tesseract"
+)
+
+# Ensure the TESSDATA_PREFIX is set correctly
+os.environ["TESSDATA_PREFIX"] = os.getenv(
+    "TESSDATA_PREFIX", "/usr/share/tesseract-ocr/4.00/tessdata/"
+)
