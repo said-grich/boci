@@ -55,7 +55,7 @@ $('#submit-button').click(function (event) {
 
     success: function (data) {
       $('#loading-spinner').hide();  // Hide the spinner
-
+      toastr.success('File downloaded successfully!', 'Success');
       // Download the returned file
       const url = window.URL.createObjectURL(data);
       const a = document.createElement('a');
