@@ -16,7 +16,8 @@ COPY requirements.txt /app/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip cache purge
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Install Tesseract and other necessary packages
 RUN apt-get update && apt-get install -y \
@@ -25,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr-ara \
     libtesseract-dev \
     libleptonica-dev \
-    libreoffice \
+    abiword \
     && apt-get clean
 
 # Copy the rest of the application code into the container

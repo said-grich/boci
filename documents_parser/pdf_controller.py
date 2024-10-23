@@ -2,11 +2,8 @@ import uuid
 import fitz  
 from PIL import Image
 import pytesseract
-from spire.pdf import *
-from spire.pdf.common import *
 import concurrent.futures
 import re
-import numpy as np
 import pdfplumber
 from PIL import Image, ImageOps, ImageEnhance, ImageFilter
 import pytesseract
@@ -14,6 +11,7 @@ import threading
 from datetime import datetime
 import shutil
 import subprocess
+import os
 
 semaphore = None
 
@@ -87,13 +85,18 @@ def process_page(page, resolution, header_height, enhance_contrast, sharpen_imag
     try:
         semaphore.acquire()  # Acquire a semaphore to limit concurrent processing
         image = page.to_image(resolution=resolution).original
-        pil_image = Image.fromarray(np.array(image))
+        pil_image = Image.frombytes('RGB', image.size, image.tobytes())
+        
         cropped_image = crop_image_to_remove_header(pil_image, header_height)
         processed_image = preprocess_image(cropped_image, enhance_contrast, sharpen_image)
+
         custom_oem_psm_config = r'--oem 3 --psm 3'
-        text = pytesseract.image_to_string(processed_image, lang='eng+fra+spa+nld', config=custom_oem_psm_config)
+        text = pytesseract.image_to_string(
+            processed_image, lang='eng+fra+spa+nld', config=custom_oem_psm_config
+        )
     finally:
         semaphore.release()  # Release the semaphore after processing
+
     return text
 
 def extract_text_with_ocr(file_path, header_height=5, resolution=300, enhance_contrast=True, sharpen_image=True, use_parallel=False, max_workers=4):
@@ -130,28 +133,29 @@ def rename_docx_file(docx_path):
 
 def convert_docx_to_pdf_with_libreoffice(temp_docx_path):
     """
-    Convert a renamed DOCX file to a PDF using LibreOffice and keep the original filename.
+    Convert a DOCX file to a PDF using AbiWord.
     """
     # Define the output directory
     output_dir = "/tmp"
-    temp_docx_path=rename_docx_file(temp_docx_path)
-    # Convert DOCX to PDF using LibreOffice command-line tool
+    temp_docx_path = rename_docx_file(temp_docx_path)  # Optional: Modify if needed
+
+    # Construct the output PDF path with the same base name as the input
+    input_base_name = os.path.splitext(os.path.basename(temp_docx_path))[0]
+    converted_pdf_path = os.path.join(output_dir, f"{input_base_name}.pdf")
+
+    # Convert DOCX to PDF using AbiWord command-line tool
     try:
         result = subprocess.run(
-            ['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', output_dir, temp_docx_path],
+            ['abiword', '--to=pdf', temp_docx_path, '-o', converted_pdf_path],
             check=True, capture_output=True, text=True
         )
         print(result.stdout)  # Debugging: Print stdout from the command
         print(result.stderr)  # Debugging: Print stderr from the command
     except subprocess.CalledProcessError as e:
-        print("Error during LibreOffice conversion:", e)
+        print("Error during AbiWord conversion:", e)
         print(e.stdout)  # Capture standard output
         print(e.stderr)  # Capture standard error
         raise
-
-    # The output PDF will be saved with the same base name as the input file
-    input_base_name = os.path.splitext(os.path.basename(temp_docx_path))[0]
-    converted_pdf_path = os.path.join(output_dir, f"{input_base_name}.pdf")
 
     # Ensure the PDF file exists and is not empty
     if not os.path.exists(converted_pdf_path) or os.path.getsize(converted_pdf_path) == 0:
@@ -159,6 +163,38 @@ def convert_docx_to_pdf_with_libreoffice(temp_docx_path):
 
     # Return the path of the generated PDF file
     return converted_pdf_path
+
+# def convert_docx_to_pdf_with_libreoffice(temp_docx_path):
+#     """
+#     Convert a renamed DOCX file to a PDF using LibreOffice and keep the original filename.
+#     """
+#     # Define the output directory
+#     output_dir = "/tmp"
+#     temp_docx_path=rename_docx_file(temp_docx_path)
+#     # Convert DOCX to PDF using LibreOffice command-line tool
+#     try:
+#         result = subprocess.run(
+#             ['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', output_dir, temp_docx_path],
+#             check=True, capture_output=True, text=True
+#         )
+#         print(result.stdout)  # Debugging: Print stdout from the command
+#         print(result.stderr)  # Debugging: Print stderr from the command
+#     except subprocess.CalledProcessError as e:
+#         print("Error during LibreOffice conversion:", e)
+#         print(e.stdout)  # Capture standard output
+#         print(e.stderr)  # Capture standard error
+#         raise
+
+#     # The output PDF will be saved with the same base name as the input file
+#     input_base_name = os.path.splitext(os.path.basename(temp_docx_path))[0]
+#     converted_pdf_path = os.path.join(output_dir, f"{input_base_name}.pdf")
+
+#     # Ensure the PDF file exists and is not empty
+#     if not os.path.exists(converted_pdf_path) or os.path.getsize(converted_pdf_path) == 0:
+#         raise FileNotFoundError(f"Conversion failed: Output PDF not created or is empty at {converted_pdf_path}")
+
+#     # Return the path of the generated PDF file
+#     return converted_pdf_path
 
 def read_doc_with_fitz(pdf_path):
     """
