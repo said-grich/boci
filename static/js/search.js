@@ -67,9 +67,9 @@ $('#submit-button').click(function (event) {
       window.URL.revokeObjectURL(url);
     },
     error: function (error) {
-      console.error('Error:', error);
-      $('#loading-spinner').hide();  // Hide the spinner
-      $('#results').html("An error occurred.");
+      $('#loading-spinner').hide();
+      toastr.error('Failed to download file. Please try again.', 'Error'); 
+     
     }
   });
 
