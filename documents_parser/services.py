@@ -364,16 +364,26 @@ def clean_text(text):
     return cleaned_text
 
 
-def exportAsWord_using_Search_id(search_id,user_name):
-            search_results = format_results_by_file(search_id)
-            serialized_results = serialize_formatted_results(search_results)
-            datetime_string = next(iter(serialized_results.items()))[1]["exact_matches"][0]["date_of_search"]
-            datetime_string_file= datetime_string.split('.')[0]
-            datetime_obj = datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-            
+def exportAsWord_using_Search_id(search_id, user_name):
+    # Format and serialize the search results
+    search_results = format_results_by_file(search_id)
+    serialized_results = serialize_formatted_results(search_results)
 
-            # Convert to a timezone-aware datetime object in UTC
-            datetime_obj = datetime_obj.replace(tzinfo=pytz.UTC)
+    # Try to extract the datetime from exact matches, fall back to partial matches if needed
+    try:
+        datetime_string = next(iter(serialized_results.items()))[1]["exact_matches"][0]["date_of_search"]
+    except (KeyError, IndexError):
+        # Fallback to partial matches if exact matches are not available
+        datetime_string = next(iter(serialized_results.items()))[1]["partial_matches"][0]["date_of_search"]
 
-            word_document = export_search_results_to_word(serialized_results, search_id, datetime_obj, user_name)
-            return word_document,user_name,datetime_string_file
+    # Ensure the datetime string is formatted correctly
+    datetime_string_file = datetime_string.split('.')[0]
+    
+    # Parse the datetime string into a timezone-aware datetime object in UTC
+    datetime_obj = datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.UTC)
+
+    # Export the search results to a Word document
+    word_document = export_search_results_to_word(serialized_results, search_id, datetime_obj, user_name)
+    
+    # Return the generated Word document, user name, and datetime string for file naming
+    return word_document, user_name, datetime_string_file

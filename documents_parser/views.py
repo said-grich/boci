@@ -64,6 +64,12 @@ class SearchView(APIView):
                     # except ValueError as e:
                     #     return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
                 
+                if all(not v for v in results_by_tag_exact.values()) and \
+                   all(not v for v in results_by_tag_partial.values()):
+                        return Response(
+                            {"error": "No matching results found."},
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
 
                 search_id =save_results_to_db(results_by_tag_exact,results_by_tag_partial ,uploaded_file.name, file_type, user)
                 
